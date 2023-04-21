@@ -7,6 +7,8 @@ import 'leaflet-sidebar-v2';
   styleUrls: ['./simulator.component.scss'],
 })
 export class SimulatorComponent implements OnInit {
+  map: L.Map;
+
   constructor() {}
 
   ngOnInit(): void {
@@ -15,7 +17,7 @@ export class SimulatorComponent implements OnInit {
 
   generateMap() {
     const maxBoundsViscocity = 1.0;
-    const map = L.map('map', {
+    this.map = L.map('map', {
       maxBoundsViscosity: maxBoundsViscocity,
     }).setView([0, 0], 1);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -24,10 +26,9 @@ export class SimulatorComponent implements OnInit {
       maxZoom: 18,
       tileSize: 512,
       zoomOffset: -1,
-    }).addTo(map);
+    }).addTo(this.map);
 
-    map.fitWorld();
-    map.setMaxBounds(L.latLngBounds([-90, -180], [90, 180]));
-    L.popup;
+    this.map.fitWorld();
+    this.map.setMaxBounds(L.latLngBounds([-90, -180], [90, 180]));
   }
 }
