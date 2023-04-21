@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
-
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
@@ -28,5 +27,7 @@ export class SimulatorComponent implements OnInit {
     }).addTo(map);
 
     map.fitWorld();
+    map.setMaxBounds(L.latLngBounds([-90, -180], [90, 180]));
+    L.popup;
   }
 }
