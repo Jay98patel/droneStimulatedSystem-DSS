@@ -8,11 +8,14 @@ import 'leaflet-sidebar-v2';
 })
 export class SimulatorComponent implements OnInit {
   map: L.Map;
+  sidebar: L.Control.Sidebar;
+  
 
   constructor() {}
 
   ngOnInit(): void {
     this.generateMap();
+    this.generateSideBar();
   }
 
   generateMap() {
@@ -30,5 +33,22 @@ export class SimulatorComponent implements OnInit {
 
     this.map.fitWorld();
     this.map.setMaxBounds(L.latLngBounds([-90, -180], [90, 180]));
+  }
+
+  generateSideBar() {
+    this.sidebar = L.control.sidebar({
+      autopan: true,
+      closeButton: true,
+      container: 'sidebar',
+      position: 'left',
+    });
+    this.map.addControl(this.sidebar);
+  }
+
+  toggleSidebar() {
+    this.sidebar.remove();
+  }
+  Show() {
+    this.map.addControl(this.sidebar);
   }
 }
