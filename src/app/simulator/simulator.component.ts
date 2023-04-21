@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
 @Component({
@@ -9,13 +10,16 @@ import 'leaflet-sidebar-v2';
 export class SimulatorComponent implements OnInit {
   map: L.Map;
   sidebar: L.Control.Sidebar;
-  
+  droneForm: FormGroup;
 
-  constructor() {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.generateMap();
     this.generateSideBar();
+    this.droneForm = this.fb.group({
+      paths: this.fb.array([this.createPath()]),
+    });
   }
 
   generateMap() {
@@ -46,9 +50,31 @@ export class SimulatorComponent implements OnInit {
   }
 
   toggleSidebar() {
-    this.sidebar.remove();
+    this.sidebar.close();
+
+    const paths = this.droneForm.value.paths;
+    for (let i = 0; i < paths.length; i++) {
+      const path = paths[i];
+      const latlng = L.latLng(path.latitude, path.longitude);
+      L.polyline([latlng], { color: 'red' }).addTo(this.map);
+    }
   }
   Show() {
     this.map.addControl(this.sidebar);
+  }
+
+  get paths(): FormArray {
+    return this.droneForm.get('paths') as FormArray;
+  }
+
+  addPath(): void {
+    this.paths.push(this.createPath());
+  }
+
+  createPath(): FormGroup {
+    return this.fb.group({
+      latitude: ['', Validators.required],
+      longitude: ['', Validators.required],
+    });
   }
 }

@@ -4,27 +4,41 @@
   <div class="leaflet-sidebar-tabs">
     <ul role="tablist">
       <li>
-        <a href="#home" role="tab"><i class="fa fa-bars"></i></a>
+        <a (click)="toggleSidebar()"><i class="fa fa-bars"></i></a>
       </li>
     </ul>
   </div>
 
   <!-- Tab panes -->
-  <div class="leaflet-sidebar-content">
-    <div class="leaflet-sidebar-content">
-      <form>
-        <div class="form-group">
-          <label for="latitude">Latitude</label>
-          <input type="number" class="form-control" id="latitude" />
-        </div>
-        <div class="form-group">
-          <label for="longitude">Longitude</label>
-          <input type="number" class="form-control" id="longitude" />
-        </div>
-        <button type="submit" class="btn btn-primary">Add Location</button>
-      </form>
+  <div class="leaflet-sidebar-content p-2">
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Select File</label>
+      <input class="form-control" type="file" id="formFile" />
     </div>
+    <span class="cursor-pointer">
+      <i class="text-primary fa fa-plus-circle" (click)="addPath()"></i>
+    </span>
+    <form [formGroup]="droneForm">
+      <div formArrayName="paths">
+        <div class="m-1" *ngFor="let path of paths.controls; let i = index">
+          <div class="d-flex justify-content-between" [formGroupName]="i">
+            <input
+              class="form-control form-control-sm"
+              placeholder="Latitude"
+              type="text"
+              formControlName="latitude"
+            />
+            <input
+              class="form-control form-control-sm"
+              placeholder="Longitude"
+              type="text"
+              formControlName="longitude"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
-<button class="btn btn-primary" (click)="toggleSidebar()">Hide</button>
+<button class="btn btn-primary">Hide</button>
 <button class="btn btn-primary" (click)="Show()">Show</button>
