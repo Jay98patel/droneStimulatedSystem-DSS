@@ -49,7 +49,6 @@ export class CoordinateFormComponent implements OnInit {
       latitudes: latitudes,
       longitudes: longitudes,
     };
-    console.log(this.droneForm.valid, coordinates);
     this.coordinates.emit(coordinates);
   }
 }
