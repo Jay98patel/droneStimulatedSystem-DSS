@@ -16,7 +16,7 @@ export class SimulatorComponent implements OnInit {
   polyline: any;
   timerId: any;
   droneIcon = L.divIcon({
-    html: '<i class="fa-solid fa-drone"></i>',
+    html: '<i class="fas fa-paper-plane fa-2x"></i>',
     className: 'drone-icon',
     iconSize: [32, 32],
   });
