@@ -11,8 +11,12 @@ export class SimulatorComponent implements OnInit {
   map: L.Map;
   sidebar: L.Control.Sidebar;
   coordinatesValues: Coordinates;
+  currentIndex = 0;
+  marker: any;
+  polyline: any;
+  timerId: any;
   droneIcon = L.divIcon({
-    html: '<i class="fas fa-paper-plane fa-2x"></i>',
+    html: '<i class="fa-solid fa-drone"></i>',
     className: 'drone-icon',
     iconSize: [32, 32],
   });
@@ -58,11 +62,11 @@ export class SimulatorComponent implements OnInit {
       coordinateValue.longitudes[0]
     );
 
-    //this will show the drone at particular
+    this.map.setView(startLatLong, 25);
     const droneMarker = L.marker(startLatLong, { icon: this.droneIcon }).addTo(
       this.map
     );
-
+      
     const pathOptions = {
       color: '#3388ff',
       weight: 3,
@@ -75,6 +79,19 @@ export class SimulatorComponent implements OnInit {
       pathLatLngs.push(latLng);
     }
     const pathPolyline = L.polyline(pathLatLngs, pathOptions).addTo(this.map);
+
+    this.timerId = setInterval(() => {
+      this.currentIndex++;
+      if (this.currentIndex >= this.coordinatesValues.latitudes.length) {
+        clearInterval(this.timerId);
+        return;
+      }
+      const newCord = pathLatLngs[this.currentIndex];
+      droneMarker.setLatLng(newCord);
+      pathPolyline.addLatLng(newCord);
+
+      this.map.panTo(newCord);
+    }, 1000);
   }
 
   toggleSidebar() {
