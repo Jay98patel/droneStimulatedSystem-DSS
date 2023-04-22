@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
+import { Subject } from 'rxjs';
 import { Coordinates } from './models/model.interfaces';
-import { Subject, interval } from 'rxjs';
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
@@ -13,16 +13,18 @@ export class SimulatorComponent implements OnInit {
 
   map: L.Map;
   sidebar: L.Control.Sidebar;
+  pathPolyline: L.Polyline;
+  droneMarker: L.Marker;
+  pathLatLngs: L.LatLng[] = [];
+
   coordinatesValues: Coordinates;
   currentIndex = 0;
   marker: any;
   polyline: any;
-  timerId: any;
-  pauseResumeSubscription: any;
   paused = false;
 
   droneIcon = L.divIcon({
-    html: '<i class="fas fa-paper-plane fa-2x"></i>',
+    html: '<img src="../../assets/drone.png" alt="" srcset="">',
     className: 'drone-icon',
     iconSize: [32, 32],
   });
@@ -61,7 +63,6 @@ export class SimulatorComponent implements OnInit {
   }
 
   getCoordinates(coordinateValue: Coordinates) {
-    const pathLatLngs: L.LatLng[] = [];
     this.coordinatesValues = coordinateValue;
     const startLatLong = L.latLng(
       coordinateValue.latitudes[0],
@@ -69,7 +70,7 @@ export class SimulatorComponent implements OnInit {
     );
 
     this.map.setView(startLatLong, 25);
-    const droneMarker = L.marker(startLatLong, { icon: this.droneIcon }).addTo(
+    this.droneMarker = L.marker(startLatLong, { icon: this.droneIcon }).addTo(
       this.map
     );
 
@@ -82,37 +83,33 @@ export class SimulatorComponent implements OnInit {
       const lat = this.coordinatesValues.latitudes[i];
       const lng = this.coordinatesValues.longitudes[i];
       const latLng = L.latLng(lat, lng);
-      pathLatLngs.push(latLng);
+      this.pathLatLngs.push(latLng);
     }
-    const pathPolyline = L.polyline(pathLatLngs, pathOptions).addTo(this.map);
+    this.pathPolyline = L.polyline(this.pathLatLngs, pathOptions).addTo(
+      this.map
+    );
+    this.moveMarker();
+  }
 
+  moveMarker() {
     const animate = () => {
       if (!this.paused) {
-        const latlng = pathLatLngs[this.currentIndex];
-        droneMarker.setLatLng(latlng);
-        pathPolyline.addLatLng(latlng);
+        const latlng = this.pathLatLngs[this.currentIndex];
+        this.droneMarker.setLatLng(latlng);
+        this.pathPolyline.addLatLng(latlng);
         this.currentIndex++;
         this.map.panTo(latlng);
-        if (this.currentIndex < pathLatLngs.length) {
+        if (this.currentIndex < this.pathLatLngs.length) {
           setTimeout(animate, 1000);
         }
       }
     };
     animate();
-    this.pauseResumeSubscription = this.pauseResume$.subscribe((isPaused) => {
-      this.paused = isPaused;
-    });
   }
 
-  pauseOrResumeDrone(droneStatus: boolean) {
+  pauseOrResumeDrone(isPause: boolean) {
     this.paused = !this.paused;
-    // if (droneStatus) {
-    //   this.pauseResume$.unsubscribe();
-    // } else {
-      // this.pauseResume$=interval(this.s) subscribe((isPaused) => {
-      //   this.paused = isPaused;
-      // });
-    // }
+    !isPause && this.moveMarker();
   }
 
   toggleSidebar() {
