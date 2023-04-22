@@ -1,0 +1,32 @@
+<div>
+  <div class="mb-3">
+    <label for="formFile" class="form-label">Select File</label>
+    <input class="form-control" type="file" id="formFile" />
+  </div>
+  <span class="cursor-pointer">
+    <i class="text-primary fa fa-plus-circle" (click)="addPath()"></i>
+  </span>
+  <form [formGroup]="droneForm">
+    <div formArrayName="paths">
+      <div class="m-1" *ngFor="let path of paths.controls; let i = index">
+        <div class="d-flex justify-content-between" [formGroupName]="i">
+          <input
+            class="form-control form-control-sm"
+            placeholder="Latitude"
+            type="number"
+            formControlName="latitude"
+          />
+          <input
+            class="form-control form-control-sm"
+            placeholder="Longitude"
+            type="number"
+            formControlName="longitude"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+  <div>
+    <button class="btn btn-primary" (click)="simulate()">Simulate</button>
+  </div>
+</div>

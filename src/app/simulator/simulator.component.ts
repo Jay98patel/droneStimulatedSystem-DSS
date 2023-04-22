@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
+import { Coordinates } from './models/model.interfaces';
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
@@ -10,16 +10,13 @@ import 'leaflet-sidebar-v2';
 export class SimulatorComponent implements OnInit {
   map: L.Map;
   sidebar: L.Control.Sidebar;
-  droneForm: FormGroup;
+  coordinatesValues: Coordinates;
 
-  constructor(private fb: FormBuilder) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.generateMap();
     this.generateSideBar();
-    this.droneForm = this.fb.group({
-      paths: this.fb.array([this.createPath()]),
-    });
   }
 
   generateMap() {
@@ -28,8 +25,7 @@ export class SimulatorComponent implements OnInit {
       maxBoundsViscosity: maxBoundsViscocity,
     }).setView([0, 0], 1);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      attribution: 'Jay Patel',
       maxZoom: 18,
       tileSize: 512,
       zoomOffset: -1,
@@ -49,44 +45,25 @@ export class SimulatorComponent implements OnInit {
     this.map.addControl(this.sidebar);
   }
 
+  getCoordinates(coordinateValue: Coordinates) {
+    this.coordinatesValues = coordinateValue;
+  }
+
   toggleSidebar() {
     this.sidebar.close();
-
-    const paths = this.droneForm.value.paths;
-    for (let i = 0; i < paths.length; i++) {
-      const path = paths[i];
-      const latlng = L.latLng(path.latitude, path.longitude);
-      L.polyline([latlng], { color: 'red' }).addTo(this.map);
+    if (this.coordinatesValues) {
+      for (let i = 0; i < this.coordinatesValues.latitudes.length; i++) {
+        const path = {
+          latitude: this.coordinatesValues.latitudes[i],
+          longitude: this.coordinatesValues.longitudes[i],
+        };
+        const latlng = L.latLng(path.latitude, path.longitude);
+        L.polyline([latlng], { color: 'red' }).addTo(this.map);
+      }
     }
   }
 
   Show() {
     this.map.addControl(this.sidebar);
-  }
-
-  get paths(): FormArray {
-    return this.droneForm.get('paths') as FormArray;
-  }
-
-  addPath(): void {
-    this.paths.push(this.createPath());
-  }
-
-  simulate() {
-    const path = this.droneForm.get('paths') as FormArray;
-    const latitudes = path.controls.map(
-      (control: any) => control.get('latitude').value
-    );
-    const longitudes = path.controls.map(
-      (control: any) => control.get('longitude').value
-    );
-    console.log(latitudes, longitudes);
-  }
-
-  createPath(): FormGroup {
-    return this.fb.group({
-      latitude: ['', Validators.required],
-      longitude: ['', Validators.required],
-    });
   }
 }
