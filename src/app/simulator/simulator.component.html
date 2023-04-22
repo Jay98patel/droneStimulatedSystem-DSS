@@ -11,7 +11,10 @@
 
   <!-- Tab panes -->
   <div class="leaflet-sidebar-content p-2">
-    <app-coordinate-form (coordinates)="getCoordinates($event)"></app-coordinate-form>
+    <app-coordinate-form
+      (coordinates)="getCoordinates($event)"
+      (droneStatus)="pauseOrResumeDrone($event)"
+    ></app-coordinate-form>
   </div>
 </div>
 <button class="btn btn-primary">Hide</button>

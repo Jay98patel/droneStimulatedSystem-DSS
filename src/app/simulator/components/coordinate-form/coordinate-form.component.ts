@@ -10,8 +10,11 @@ import { Coordinates } from '../../models/model.interfaces';
 export class CoordinateFormComponent implements OnInit {
   @Output() coordinates: EventEmitter<Coordinates> =
     new EventEmitter<Coordinates>();
+  @Output() droneStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   droneForm: FormGroup;
+  buttonName: string = 'Pause';
+  isDronePause: boolean = false;
 
   constructor(private fb: FormBuilder) {}
 
@@ -53,6 +56,12 @@ export class CoordinateFormComponent implements OnInit {
       latitude: ['', [...validators]],
       longitude: ['', [...validators]],
     });
+  }
+
+  isResumeOrPause() {
+    this.isDronePause = !this.isDronePause;
+    this.buttonName = this.isDronePause ? 'Resume' : 'Pause';
+    this.droneStatus.emit(this.isDronePause);
   }
 
   get paths(): FormArray {

@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
 import { Coordinates } from './models/model.interfaces';
+import { Subject, interval } from 'rxjs';
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
   styleUrls: ['./simulator.component.scss'],
 })
 export class SimulatorComponent implements OnInit {
+  private pauseResume$ = new Subject<boolean>();
+
   map: L.Map;
   sidebar: L.Control.Sidebar;
   coordinatesValues: Coordinates;
@@ -15,6 +18,9 @@ export class SimulatorComponent implements OnInit {
   marker: any;
   polyline: any;
   timerId: any;
+  pauseResumeSubscription: any;
+  paused = false;
+
   droneIcon = L.divIcon({
     html: '<i class="fas fa-paper-plane fa-2x"></i>',
     className: 'drone-icon',
@@ -66,7 +72,7 @@ export class SimulatorComponent implements OnInit {
     const droneMarker = L.marker(startLatLong, { icon: this.droneIcon }).addTo(
       this.map
     );
-      
+
     const pathOptions = {
       color: '#3388ff',
       weight: 3,
@@ -80,18 +86,33 @@ export class SimulatorComponent implements OnInit {
     }
     const pathPolyline = L.polyline(pathLatLngs, pathOptions).addTo(this.map);
 
-    this.timerId = setInterval(() => {
-      this.currentIndex++;
-      if (this.currentIndex >= this.coordinatesValues.latitudes.length) {
-        clearInterval(this.timerId);
-        return;
+    const animate = () => {
+      if (!this.paused) {
+        const latlng = pathLatLngs[this.currentIndex];
+        droneMarker.setLatLng(latlng);
+        pathPolyline.addLatLng(latlng);
+        this.currentIndex++;
+        this.map.panTo(latlng);
+        if (this.currentIndex < pathLatLngs.length) {
+          setTimeout(animate, 1000);
+        }
       }
-      const newCord = pathLatLngs[this.currentIndex];
-      droneMarker.setLatLng(newCord);
-      pathPolyline.addLatLng(newCord);
+    };
+    animate();
+    this.pauseResumeSubscription = this.pauseResume$.subscribe((isPaused) => {
+      this.paused = isPaused;
+    });
+  }
 
-      this.map.panTo(newCord);
-    }, 1000);
+  pauseOrResumeDrone(droneStatus: boolean) {
+    this.paused = !this.paused;
+    // if (droneStatus) {
+    //   this.pauseResume$.unsubscribe();
+    // } else {
+      // this.pauseResume$=interval(this.s) subscribe((isPaused) => {
+      //   this.paused = isPaused;
+      // });
+    // }
   }
 
   toggleSidebar() {
