@@ -59,6 +59,7 @@ export class SimulatorComponent implements OnInit {
       L.polyline([latlng], { color: 'red' }).addTo(this.map);
     }
   }
+
   Show() {
     this.map.addControl(this.sidebar);
   }
@@ -69,6 +70,17 @@ export class SimulatorComponent implements OnInit {
 
   addPath(): void {
     this.paths.push(this.createPath());
+  }
+
+  simulate() {
+    const path = this.droneForm.get('paths') as FormArray;
+    const latitudes = path.controls.map(
+      (control: any) => control.get('latitude').value
+    );
+    const longitudes = path.controls.map(
+      (control: any) => control.get('longitude').value
+    );
+    console.log(latitudes, longitudes);
   }
 
   createPath(): FormGroup {
