@@ -48,6 +48,7 @@ export class SimulatorComponent implements OnInit {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Jay Patel',
       maxZoom: 18,
+      minZoom: 2,
       tileSize: 512,
       zoomOffset: -1,
     }).addTo(this.map);
@@ -103,6 +104,12 @@ export class SimulatorComponent implements OnInit {
           ];
         this.droneMarker[this.selectedDrone].setLatLng(latlng);
         this.pathPolyline[this.selectedDrone].addLatLng(latlng);
+        this.map.flyTo(latlng, 17, {
+          duration: 0.5,
+          easeLinearity: 20,
+          noMoveStart: true,
+          animate: true,
+        });
 
         this.map.panTo(latlng, { animate: true });
         this.currentIndex[this.selectedDrone]++;
@@ -134,7 +141,7 @@ export class SimulatorComponent implements OnInit {
       icon: this.droneIcon,
     }).addTo(this.map);
     this.droneMarker[this.selectedDrone].setLatLng(startLatLong);
-    this.map.setView(startLatLong, 25);
+    this.map.setView(startLatLong, 18);
   }
 
   pauseOrResumeDrone(isPause: boolean) {
