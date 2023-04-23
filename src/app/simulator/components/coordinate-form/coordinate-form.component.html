@@ -58,6 +58,17 @@
       </div>
     </div>
   </form>
+
+  <label for="customRange2" class="form-label">Jump to Any Time</label>
+  <input
+    type="range"
+    class="form-range"
+    (change)="jumbToTime($event)"
+    [value]="0"
+    [min]="0"
+    [max]="paths.length - 1"
+    id="customRange2"
+  />
   <div class="d-flex justify-content-between">
     <button class="btn btn-primary" (click)="simulate()">Simulate</button>
     <button class="btn btn-warning" (click)="isResumeOrPause()">

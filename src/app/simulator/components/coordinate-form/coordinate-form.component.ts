@@ -13,6 +13,8 @@ export class CoordinateFormComponent implements OnInit {
   @Output() droneStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() setMapViewOnDroneChanges: EventEmitter<DroneValue> =
     new EventEmitter<DroneValue>();
+  @Output() coordinateAtTime: EventEmitter<DroneValue> =
+    new EventEmitter<DroneValue>();
 
   droneForm: FormGroup[] = [];
   buttonName: string = 'Pause';
@@ -43,6 +45,14 @@ export class CoordinateFormComponent implements OnInit {
     this.patchValues();
   }
 
+  jumbToTime(e: any) {
+    const value = +e.target.value + 1;
+
+    const coordinatesAtTime = this.paths.value[value - 1];
+    console.log(coordinatesAtTime, value);
+    this.coordinateAtTime.emit(coordinatesAtTime);
+  }
+
   //development purpose
   patchValues() {
     let arr = [
@@ -70,8 +80,8 @@ export class CoordinateFormComponent implements OnInit {
       this.noOfDrones.pop();
     }
     this.buildFormForDrone(this.noOfDrones.length - 1);
-    const latLng: DroneValue = this.droneForm[this.noOfDrones.length - 1].value.paths[0];
-    debugger
+    const latLng: DroneValue =
+      this.droneForm[this.noOfDrones.length - 1].value.paths[0];
     this.setMapViewOnDroneChanges.emit(latLng);
   }
 
