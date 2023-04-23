@@ -120,6 +120,9 @@ export class SimulatorComponent implements OnInit {
   setMapView(latLng: DroneValue) {
     if (latLng.latitude && latLng.longitude) {
       const startLatLong = L.latLng(latLng.latitude, latLng.longitude);
+      this.droneMarker[this.selectedDrone] = L.marker(startLatLong, {
+        icon: this.droneIcon,
+      }).addTo(this.map);
       this.map.setView(startLatLong, 25);
     }
   }
