@@ -17,7 +17,7 @@ export class SimulatorComponent implements OnInit {
 
   coordinatesValues: Coordinates;
   selectedDrone: number;
-  currentIndex = 0;
+  currentIndex: number[] = [];
   marker: any;
   polyline: any;
   paused = false;
@@ -63,7 +63,8 @@ export class SimulatorComponent implements OnInit {
 
   getCoordinates(coordinateValue: Coordinates) {
     this.selectedDrone = coordinateValue.selectedDrone;
-    this.pathLatLngs[this.selectedDrone] = [];
+    this.pathLatLngs.push([]);
+    this.currentIndex.push(0);
     this.coordinatesValues = coordinateValue;
     const startLatLong = L.latLng(
       coordinateValue.latitudes[0],
@@ -71,6 +72,7 @@ export class SimulatorComponent implements OnInit {
     );
 
     this.map.setView(startLatLong, 25);
+
     this.droneMarker[this.selectedDrone] = L.marker(startLatLong, {
       icon: this.droneIcon,
     }).addTo(this.map);
@@ -90,14 +92,16 @@ export class SimulatorComponent implements OnInit {
       this.pathLatLngs[this.selectedDrone],
       pathOptions
     ).addTo(this.map);
-    
     this.moveMarker();
   }
 
   moveMarker() {
     const animate = () => {
       if (!this.paused) {
-        const latlng = this.pathLatLngs[this.selectedDrone][this.currentIndex];
+        const latlng =
+          this.pathLatLngs[this.selectedDrone][
+            this.currentIndex[this.selectedDrone]
+          ];
         this.droneMarker[this.selectedDrone].setLatLng(latlng);
         this.pathPolyline[this.selectedDrone].addLatLng(latlng);
         this.map.flyTo(latlng, 17, {
@@ -107,8 +111,11 @@ export class SimulatorComponent implements OnInit {
           animate: true,
         });
         this.map.panTo(latlng);
-        this.currentIndex++;
-        if (this.currentIndex < this.pathLatLngs[this.selectedDrone].length) {
+        this.currentIndex[this.selectedDrone]++;
+        if (
+          this.currentIndex[this.selectedDrone] <
+          this.pathLatLngs[this.selectedDrone].length
+        ) {
           setTimeout(animate, 1000);
         }
       }
