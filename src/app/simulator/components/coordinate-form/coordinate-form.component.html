@@ -1,4 +1,25 @@
 <div>
+  <h6>No. of Drones</h6>
+  <div class="btn-group m-1" role="group" aria-label="Default button group">
+    <button
+      type="button"
+      (click)="increaseDecreaseDrone('decrease')"
+      class="btn btn-outline-primary"
+      [disabled]="noOfDrones.length == 1"
+    >
+      -
+    </button>
+    <button type="button" class="btn btn-outline-primary">
+      {{ noOfDrones.length }}
+    </button>
+    <button
+      type="button"
+      (click)="increaseDecreaseDrone('increase')"
+      class="btn btn-outline-primary"
+    >
+      +
+    </button>
+  </div>
   <div class="mb-3">
     <label for="formFile" class="form-label">Select File</label>
     <input class="form-control" type="file" id="formFile" />
@@ -6,7 +27,7 @@
   <span class="cursor-pointer">
     <i class="text-primary fa fa-plus-circle" (click)="addPath()"></i>
   </span>
-  <form [formGroup]="droneForm">
+  <form [formGroup]="droneForm[noOfDrones.length - 1]">
     <div formArrayName="paths">
       <div class="m-1" *ngFor="let path of paths.controls; let i = index">
         <div class="d-flex justify-content-between" [formGroupName]="i">

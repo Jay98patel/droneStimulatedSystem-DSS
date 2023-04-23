@@ -24,7 +24,7 @@ export class SimulatorComponent implements OnInit {
   paused = false;
 
   droneIcon = L.divIcon({
-    html: '<img src="../../assets/drone.png" alt="" srcset="">',
+    html: '<img src="../../assets/drone.png" alt="">',
     className: 'drone-icon',
     iconSize: [32, 32],
   });
@@ -101,9 +101,9 @@ export class SimulatorComponent implements OnInit {
           duration: 0.5,
           easeLinearity: 0.1,
           noMoveStart: true,
-          animate:true
+          animate: true,
         });
-        this.map.panTo(latlng)
+        this.map.panTo(latlng);
         this.currentIndex++;
         if (this.currentIndex < this.pathLatLngs.length) {
           setTimeout(animate, 1000);

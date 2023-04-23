@@ -12,25 +12,35 @@ export class CoordinateFormComponent implements OnInit {
     new EventEmitter<Coordinates>();
   @Output() droneStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  droneForm: FormGroup;
+  droneForm: FormGroup[] = [];
   buttonName: string = 'Pause';
   isDronePause: boolean = false;
+  noOfDrones: number[] = [1];
+  coordinateForm: any[] = [];
 
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.droneForm = this.fb.group({
-      paths: this.fb.array([
-        this.createPath(),
-        this.createPath(), //TODO
-        this.createPath(), // TODO
-        this.createPath(), // TODO
-        this.createPath(), // TODO
-        this.createPath(), // TODO
-      ]),
-    });
+    this.buildFormForDrone(0);
+  }
+
+  buildFormForDrone(index: number) {
+    if (!this.droneForm[index]) {
+      this.droneForm[index] = this.fb.group({
+        paths: this.fb.array([
+          this.createPath(), // TODO
+          this.createPath(), // TODO
+          this.createPath(), // TODO
+          this.createPath(), // TODO
+          this.createPath(), // TODO
+          this.createPath(), // TODO
+        ]),
+      });
+    }
+    //temp
     this.patchValues();
   }
+
   //development purpose
   patchValues() {
     let arr = [
@@ -41,13 +51,23 @@ export class CoordinateFormComponent implements OnInit {
       [40.68699, -73.94205],
       [40.6851, -73.94136],
     ];
-    const pathsControl = this.droneForm.get('paths') as FormArray;
+    const pathsControl = this.droneForm[0].get('paths') as FormArray;
     for (let i = 0; i < pathsControl.length; i++) {
       pathsControl.at(i).patchValue({
         latitude: arr[i][0],
         longitude: arr[i][1],
       });
     }
+  }
+
+  increaseDecreaseDrone(operation: string) {
+    const lengthOfDrone = this.noOfDrones.length;
+    if (operation == 'increase') {
+      this.noOfDrones.push(lengthOfDrone);
+    } else {
+      this.noOfDrones.pop();
+    }
+    this.buildFormForDrone(this.noOfDrones.length - 1);
   }
 
   createPath(): FormGroup {
@@ -65,7 +85,7 @@ export class CoordinateFormComponent implements OnInit {
   }
 
   get paths(): FormArray {
-    return this.droneForm.get('paths') as FormArray;
+    return this.droneForm[this.noOfDrones.length - 1].get('paths') as FormArray;
   }
 
   addPath(): void {
@@ -73,7 +93,9 @@ export class CoordinateFormComponent implements OnInit {
   }
 
   simulate() {
-    const path = this.droneForm.get('paths') as FormArray;
+    const path = this.droneForm[this.noOfDrones.length - 1].get(
+      'paths'
+    ) as FormArray;
     const latitudes = path.controls.map(
       (control: any) => control.get('latitude').value
     );
