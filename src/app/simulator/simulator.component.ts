@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
-import { Subject } from 'rxjs';
 import { Coordinates, DroneValue } from './models/model.interfaces';
 @Component({
   selector: 'app-simulator',
@@ -104,13 +103,8 @@ export class SimulatorComponent implements OnInit {
           ];
         this.droneMarker[this.selectedDrone].setLatLng(latlng);
         this.pathPolyline[this.selectedDrone].addLatLng(latlng);
-        this.map.flyTo(latlng, 17, {
-          duration: 0.5,
-          easeLinearity: 0.1,
-          noMoveStart: true,
-          animate: true,
-        });
-        this.map.panTo(latlng);
+        
+        this.map.panTo(latlng,{animate:true});
         this.currentIndex[this.selectedDrone]++;
         if (
           this.currentIndex[this.selectedDrone] <
