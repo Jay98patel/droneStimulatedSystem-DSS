@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-sidebar-v2';
 import { Subject } from 'rxjs';
-import { Coordinates } from './models/model.interfaces';
+import { Coordinates, DroneValue } from './models/model.interfaces';
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
@@ -121,6 +121,13 @@ export class SimulatorComponent implements OnInit {
       }
     };
     animate();
+  }
+
+  setMapView(latLng: DroneValue) {
+    if (latLng.latitude && latLng.longitude) {
+      const startLatLong = L.latLng(latLng.latitude, latLng.longitude);
+      this.map.setView(startLatLong, 25);
+    }
   }
 
   pauseOrResumeDrone(isPause: boolean) {

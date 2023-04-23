@@ -3,3 +3,8 @@ export interface Coordinates {
   longitudes: number[];
   selectedDrone: number;
 }
+
+export interface DroneValue {
+  latitude: number;
+  longitude: number;
+}

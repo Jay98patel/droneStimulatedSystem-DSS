@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Coordinates } from '../../models/model.interfaces';
+import { Coordinates, DroneValue } from '../../models/model.interfaces';
 
 @Component({
   selector: 'app-coordinate-form',
@@ -11,6 +11,8 @@ export class CoordinateFormComponent implements OnInit {
   @Output() coordinates: EventEmitter<Coordinates> =
     new EventEmitter<Coordinates>();
   @Output() droneStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() setMapViewOnDroneChanges: EventEmitter<DroneValue> =
+    new EventEmitter<DroneValue>();
 
   droneForm: FormGroup[] = [];
   buttonName: string = 'Pause';
@@ -68,6 +70,9 @@ export class CoordinateFormComponent implements OnInit {
       this.noOfDrones.pop();
     }
     this.buildFormForDrone(this.noOfDrones.length - 1);
+    const latLng: DroneValue = this.droneForm[this.noOfDrones.length - 1].value.paths[0];
+    debugger
+    this.setMapViewOnDroneChanges.emit(latLng);
   }
 
   createPath(): FormGroup {
