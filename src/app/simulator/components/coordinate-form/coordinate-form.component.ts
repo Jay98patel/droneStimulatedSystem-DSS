@@ -92,6 +92,10 @@ export class CoordinateFormComponent implements OnInit {
     this.paths.push(this.createPath());
   }
 
+  removeCoordinate(i: number) {
+    this.paths.removeAt(i);
+  }
+
   simulate() {
     const path = this.droneForm[this.noOfDrones.length - 1].get(
       'paths'
@@ -105,6 +109,7 @@ export class CoordinateFormComponent implements OnInit {
     const coordinates: Coordinates = {
       latitudes: latitudes,
       longitudes: longitudes,
+      selectedDrone: this.noOfDrones.length - 1,
     };
     this.coordinates.emit(coordinates);
   }

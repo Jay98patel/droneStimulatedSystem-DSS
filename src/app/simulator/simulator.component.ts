@@ -9,22 +9,21 @@ import { Coordinates } from './models/model.interfaces';
   styleUrls: ['./simulator.component.scss'],
 })
 export class SimulatorComponent implements OnInit {
-  private pauseResume$ = new Subject<boolean>();
-
   map: L.Map;
   sidebar: L.Control.Sidebar;
-  pathPolyline: L.Polyline;
-  droneMarker: L.Marker;
-  pathLatLngs: L.LatLng[] = [];
+  pathPolyline: L.Polyline[] = [];
+  droneMarker: L.Marker[] = [];
+  pathLatLngs: L.LatLng[][] = [];
 
   coordinatesValues: Coordinates;
+  selectedDrone: number;
   currentIndex = 0;
   marker: any;
   polyline: any;
   paused = false;
 
   droneIcon = L.divIcon({
-    html: '<img src="../../assets/drone.png" alt="">',
+    html: '<img src="../../assets/drone.png" alt="T">',
     className: 'drone-icon',
     iconSize: [32, 32],
   });
@@ -63,6 +62,8 @@ export class SimulatorComponent implements OnInit {
   }
 
   getCoordinates(coordinateValue: Coordinates) {
+    this.selectedDrone = coordinateValue.selectedDrone;
+    this.pathLatLngs[this.selectedDrone] = [];
     this.coordinatesValues = coordinateValue;
     const startLatLong = L.latLng(
       coordinateValue.latitudes[0],
@@ -70,9 +71,9 @@ export class SimulatorComponent implements OnInit {
     );
 
     this.map.setView(startLatLong, 25);
-    this.droneMarker = L.marker(startLatLong, { icon: this.droneIcon }).addTo(
-      this.map
-    );
+    this.droneMarker[this.selectedDrone] = L.marker(startLatLong, {
+      icon: this.droneIcon,
+    }).addTo(this.map);
 
     const pathOptions = {
       color: '#3388ff',
@@ -83,20 +84,22 @@ export class SimulatorComponent implements OnInit {
       const lat = this.coordinatesValues.latitudes[i];
       const lng = this.coordinatesValues.longitudes[i];
       const latLng = L.latLng(lat, lng);
-      this.pathLatLngs.push(latLng);
+      this.pathLatLngs[this.selectedDrone].push(latLng);
     }
-    this.pathPolyline = L.polyline(this.pathLatLngs, pathOptions).addTo(
-      this.map
-    );
+    this.pathPolyline[this.selectedDrone] = L.polyline(
+      this.pathLatLngs[this.selectedDrone],
+      pathOptions
+    ).addTo(this.map);
+    
     this.moveMarker();
   }
 
   moveMarker() {
     const animate = () => {
       if (!this.paused) {
-        const latlng = this.pathLatLngs[this.currentIndex];
-        this.droneMarker.setLatLng(latlng);
-        this.pathPolyline.addLatLng(latlng);
+        const latlng = this.pathLatLngs[this.selectedDrone][this.currentIndex];
+        this.droneMarker[this.selectedDrone].setLatLng(latlng);
+        this.pathPolyline[this.selectedDrone].addLatLng(latlng);
         this.map.flyTo(latlng, 17, {
           duration: 0.5,
           easeLinearity: 0.1,
@@ -105,7 +108,7 @@ export class SimulatorComponent implements OnInit {
         });
         this.map.panTo(latlng);
         this.currentIndex++;
-        if (this.currentIndex < this.pathLatLngs.length) {
+        if (this.currentIndex < this.pathLatLngs[this.selectedDrone].length) {
           setTimeout(animate, 1000);
         }
       }

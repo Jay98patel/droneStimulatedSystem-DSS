@@ -31,18 +31,29 @@
     <div formArrayName="paths">
       <div class="m-1" *ngFor="let path of paths.controls; let i = index">
         <div class="d-flex justify-content-between" [formGroupName]="i">
-          <input
-            class="form-control form-control-sm"
-            placeholder="Latitude"
-            type="number"
-            formControlName="latitude"
-          />
-          <input
-            class="form-control form-control-sm"
-            placeholder="Longitude"
-            type="number"
-            formControlName="longitude"
-          />
+          <div class="m-1">
+            <input
+              class="form-control form-control-sm"
+              placeholder="Latitude"
+              type="number"
+              formControlName="latitude"
+            />
+          </div>
+          <div class="m-1">
+            <input
+              class="form-control form-control-sm"
+              placeholder="Longitude"
+              type="number"
+              formControlName="longitude"
+            />
+          </div>
+          <span class="cursor-pointer text-danger p-2">
+            <i
+              class="fa fa-trash"
+              (click)="removeCoordinate(i)"
+              aria-hidden="true"
+            ></i>
+          </span>
         </div>
       </div>
     </div>
