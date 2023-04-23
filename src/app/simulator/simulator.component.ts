@@ -97,8 +97,14 @@ export class SimulatorComponent implements OnInit {
         const latlng = this.pathLatLngs[this.currentIndex];
         this.droneMarker.setLatLng(latlng);
         this.pathPolyline.addLatLng(latlng);
+        this.map.flyTo(latlng, 17, {
+          duration: 0.5,
+          easeLinearity: 0.1,
+          noMoveStart: true,
+          animate:true
+        });
+        this.map.panTo(latlng)
         this.currentIndex++;
-        this.map.panTo(latlng);
         if (this.currentIndex < this.pathLatLngs.length) {
           setTimeout(animate, 1000);
         }
