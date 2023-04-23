@@ -53,13 +53,17 @@
                 formControlName="longitude"
               />
             </div>
-            <span class="cursor-pointer text-danger p-2">
+            <button
+              class="btn border-0 p-0 text-danger"
+              [disabled]="paths.length == 1"
+              [ngClass]="{ disabled: paths.length == 1 }"
+            >
               <i
                 class="fa fa-trash"
                 (click)="removeCoordinate(i)"
                 aria-hidden="true"
               ></i>
-            </span>
+            </button>
           </div>
         </div>
       </div>

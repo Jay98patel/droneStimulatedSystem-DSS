@@ -26,45 +26,33 @@ export class CoordinateFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildFormForDrone(0);
+    // this.patchValues()
   }
 
   buildFormForDrone(index: number) {
     if (!this.droneForm[index]) {
       this.droneForm[index] = this.fb.group({
-        paths: this.fb.array([
-          this.createPath(), // TODO
-          this.createPath(), // TODO
-          this.createPath(), // TODO
-          this.createPath(), // TODO
-          this.createPath(), // TODO
-          this.createPath(), // TODO
-        ]),
+        paths: this.fb.array([this.createPath()]),
       });
     }
-    //temp
-    this.patchValues();
   }
 
   jumbToTime(e: any) {
     const value = +e.target.value + 1;
-
     const coordinatesAtTime = this.paths.value[value - 1];
     console.log(coordinatesAtTime, value);
     this.coordinateAtTime.emit(coordinatesAtTime);
   }
 
-  //development purpose
   patchValues() {
     let arr = [
-      [40.6851, -73.94136],
-      [40.68576, -73.94149],
-      [40.68649, -73.94165],
-      [40.68679, -73.94185],
-      [40.68699, -73.94205],
-      [40.6851, -73.94136],
+      [18.5204, 73.8567],
+      [19.076, 72.8777],
+      [23.0225, 72.5714],
     ];
     const pathsControl = this.droneForm[0].get('paths') as FormArray;
     for (let i = 0; i < pathsControl.length; i++) {
+      this.paths.push(this.createPath());
       pathsControl.at(i).patchValue({
         latitude: arr[i][0],
         longitude: arr[i][1],
@@ -105,6 +93,7 @@ export class CoordinateFormComponent implements OnInit {
 
   addPath(): void {
     this.paths.push(this.createPath());
+    console.log(this.paths.length)
   }
 
   removeCoordinate(i: number) {
