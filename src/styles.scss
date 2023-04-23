@@ -2,6 +2,54 @@
 @import "../node_modules/leaflet/dist/leaflet.css";
 @import "../node_modules//leaflet-sidebar-v2/css/leaflet-sidebar.css";
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .cursor-pointer {
   cursor: pointer;
+}
+
+#primarySidebar {
+  &:checked {
+    & ~ .leaflet-sidebar {
+      transform: translateX(-100%);
+    }
+    
+    & ~ .menu { 
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  & ~ .leaflet-sidebar {
+    box-shadow: none;
+    border: 0;
+    transition: 0.4s all;
+    transform: translateX(0);
+  }
+  & ~ .menu {
+    display: flex;
+    position: fixed;
+    top: 10px;
+    left: 0;
+    z-index: 99;
+    padding: 0.8rem;
+    color: #000;
+    cursor: pointer;
+    transition: 0.4s all;
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.leaflet-sidebar {
+  &.leaflet-touch {
+    border: 0;
+    box-shadow: none;
+  }
+  &.collapsed {
+    width: 0;
+  }
 }

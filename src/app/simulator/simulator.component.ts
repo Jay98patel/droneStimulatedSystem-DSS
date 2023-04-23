@@ -159,4 +159,8 @@ export class SimulatorComponent implements OnInit {
   Show() {
     this.map.addControl(this.sidebar);
   }
+
+  hide() {
+    this.sidebar.remove();
+  }
 }

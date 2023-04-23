@@ -1,23 +1,26 @@
-<div id="map"></div>
-<div id="sidebar" class="leaflet-sidebar">
-  <!-- Nav tabs -->
-  <div class="leaflet-sidebar-tabs">
-    <ul role="tablist">
-      <li>
-        <a (click)="toggleSidebar()"><i class="fa fa-bars"></i></a>
-      </li>
-    </ul>
+<section class="d-flex h-100 flex-grow-1 overflow-hidden">
+  <div class="flex-grow-1">
+    <div id="map"></div>
   </div>
 
-  <!-- Tab panes -->
-  <div class="leaflet-sidebar-content p-2">
-    <app-coordinate-form
+  <input type="checkbox" class="d-none" id="primarySidebar" />
+  <label class="menu" for="primarySidebar">
+    <span class="fa fa-bars"></span>
+  </label>
+  <div class="leaflet-sidebar">
+    <!-- Tab panes -->
+    <div class="leaflet-sidebar-content">
+      <app-coordinate-form
+      class="d-block h-100"
       (coordinates)="getCoordinates($event)"
       (droneStatus)="pauseOrResumeDrone($event)"
       (setMapViewOnDroneChanges)="setMapView($event)"
       (coordinateAtTime)="jumpToTime($event)"
-    ></app-coordinate-form>
+      ></app-coordinate-form>
+    </div>
   </div>
-</div>
-<button class="btn btn-primary">Hide</button>
-<button class="btn btn-primary" (click)="Show()">Show</button>
+</section>
+<!-- <div class="d-flex justify-content-end flex-shrink-0 p-2">
+    <button class="btn btn-primary" (click)="hide()">Hide</button>
+    <button class="btn btn-primary ms-3" (click)="Show()">Show</button>
+  </div> -->

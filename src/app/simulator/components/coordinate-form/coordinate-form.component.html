@@ -1,75 +1,82 @@
-<div>
-  <h6>No. of Drones</h6>
-  <div class="btn-group m-1" role="group" aria-label="Default button group">
-    <button
-      type="button"
-      (click)="increaseDecreaseDrone('decrease')"
-      class="btn btn-outline-primary"
-      [disabled]="noOfDrones.length == 1"
-    >
-      -
-    </button>
-    <button type="button" class="btn btn-outline-primary">
-      {{ noOfDrones.length }}
-    </button>
-    <button
-      type="button"
-      (click)="increaseDecreaseDrone('increase')"
-      class="btn btn-outline-primary"
-    >
-      +
-    </button>
+<div class="d-flex flex-column h-100 overflow-hidden">
+  <div class="d-flex justify-content-between align-items-center p-2">
+    <h6 class="mb-0">No. of Drones</h6>
+    <label class="cursor-pointer p-2" for="primarySidebar">
+      <span class="fa fa-times"></span>
+    </label>
   </div>
-  <div class="mb-3">
-    <label for="formFile" class="form-label">Select File</label>
-    <input class="form-control" type="file" id="formFile" />
-  </div>
-  <span class="cursor-pointer">
-    <i class="text-primary fa fa-plus-circle" (click)="addPath()"></i>
-  </span>
-  <form [formGroup]="droneForm[noOfDrones.length - 1]">
-    <div formArrayName="paths">
-      <div class="m-1" *ngFor="let path of paths.controls; let i = index">
-        <div class="d-flex justify-content-between" [formGroupName]="i">
-          <div class="m-1">
-            <input
-              class="form-control form-control-sm"
-              placeholder="Latitude"
-              type="number"
-              formControlName="latitude"
-            />
+  <div class="flex-grow-1 overflow-auto p-2">
+    <div class="btn-group m-1" role="group" aria-label="Default button group">
+      <button
+        type="button"
+        (click)="increaseDecreaseDrone('decrease')"
+        class="btn btn-outline-primary"
+        [disabled]="noOfDrones.length == 1"
+      >
+        -
+      </button>
+      <button type="button" class="btn btn-outline-primary">
+        {{ noOfDrones.length }}
+      </button>
+      <button
+        type="button"
+        (click)="increaseDecreaseDrone('increase')"
+        class="btn btn-outline-primary"
+      >
+        +
+      </button>
+    </div>
+    <div class="mb-3">
+      <label for="formFile" class="form-label">Select File</label>
+      <input class="form-control" type="file" id="formFile" />
+    </div>
+    <span class="cursor-pointer">
+      <i class="text-primary fa fa-plus-circle" (click)="addPath()"></i>
+    </span>
+    <form [formGroup]="droneForm[noOfDrones.length - 1]">
+      <div formArrayName="paths">
+        <div class="m-1" *ngFor="let path of paths.controls; let i = index">
+          <div class="d-flex justify-content-between" [formGroupName]="i">
+            <div class="m-1">
+              <input
+                class="form-control form-control-sm"
+                placeholder="Latitude"
+                type="number"
+                formControlName="latitude"
+              />
+            </div>
+            <div class="m-1">
+              <input
+                class="form-control form-control-sm"
+                placeholder="Longitude"
+                type="number"
+                formControlName="longitude"
+              />
+            </div>
+            <span class="cursor-pointer text-danger p-2">
+              <i
+                class="fa fa-trash"
+                (click)="removeCoordinate(i)"
+                aria-hidden="true"
+              ></i>
+            </span>
           </div>
-          <div class="m-1">
-            <input
-              class="form-control form-control-sm"
-              placeholder="Longitude"
-              type="number"
-              formControlName="longitude"
-            />
-          </div>
-          <span class="cursor-pointer text-danger p-2">
-            <i
-              class="fa fa-trash"
-              (click)="removeCoordinate(i)"
-              aria-hidden="true"
-            ></i>
-          </span>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
 
-  <label for="customRange2" class="form-label">Jump to Any Time</label>
-  <input
-    type="range"
-    class="form-range"
-    (change)="jumbToTime($event)"
-    [value]="0"
-    [min]="0"
-    [max]="paths.length - 1"
-    id="customRange2"
-  />
-  <div class="d-flex justify-content-between">
+    <label for="customRange2" class="form-label">Jump to Any Time</label>
+    <input
+      type="range"
+      class="form-range"
+      (change)="jumbToTime($event)"
+      [value]="0"
+      [min]="0"
+      [max]="paths.length - 1"
+      id="customRange2"
+    />
+  </div>
+  <div class="d-flex justify-content-between p-2">
     <button class="btn btn-primary" (click)="simulate()">Simulate</button>
     <button class="btn btn-warning" (click)="isResumeOrPause()">
       {{ buttonName }}
